@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
-	"statee/syslib/cpu"
+	"statee/syslib/osinfo"
 	"time"
 )
 
 func main() {
 	for {
-		hmm := cpu.Get()
+		hmm := osinfo.GetOsInfo()
 		fmt.Println(hmm)
 		time.Sleep(time.Second)
 	}
