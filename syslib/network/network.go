@@ -57,7 +57,7 @@ func GetInterface(name string) Interface {
 		Tx:         tx,
 		Speed:      speed,
 		MacAddress: mac_address,
-		Wired:      wired == 0,
+		Wired:      wired == 1,
 		State:      state,
 	}
 }
