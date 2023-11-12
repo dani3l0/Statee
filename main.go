@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
-	"statee/syslib/network"
+	"statee/syslib/processes"
 	"time"
 )
 
 func main() {
 	for {
-		hmm := network.GetInterfaces()
+		hmm := processes.GetAllProcesses()
 		fmt.Println(hmm)
 		time.Sleep(time.Second)
 	}
