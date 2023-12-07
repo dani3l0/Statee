@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
-	"statee/syslib/processes"
+	"statee/syslib/disks"
 	"time"
 )
 
 func main() {
 	for {
-		hmm := processes.GetAllProcesses()
+		hmm, _ := disks.GetDisk("sda")
 		fmt.Println(hmm)
 		time.Sleep(time.Second)
 	}
