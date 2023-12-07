@@ -1,4 +1,4 @@
-package stat
+package cpu
 
 import (
 	"statee/syslib/utils/sysfs"
@@ -17,7 +17,7 @@ type CPUStat struct {
 var cpuStat []CPUStat
 
 // Gets /proc/stat and calculates the differences for each cpu
-func GetCpu() []CPUStat {
+func GetCpuStat() []CPUStat {
 	stats := getCPUStat()
 
 	if len(cpuStat) == 0 {

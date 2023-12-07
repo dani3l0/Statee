@@ -1,10 +1,8 @@
 package cpu
 
-import "statee/syslib/utils/stat"
-
 // Return usages in %% for each cpu
 func GetCpuUsage() []float32 {
-	cpu_stat := stat.GetCpu()
+	cpu_stat := GetCpuStat()
 	var cpu_usage []float32
 
 	for _, core := range cpu_stat {
