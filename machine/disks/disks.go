@@ -1,7 +1,6 @@
 package disks
 
 import (
-	"fmt"
 	"os"
 	"strings"
 )
@@ -22,7 +21,6 @@ func GetDisks() []Disk {
 		x := v.Name()
 		for _, y := range whitelist {
 			if strings.HasPrefix(x, y) {
-				fmt.Println(x)
 				disk, _ := GetDisk(x)
 				disks = append(disks, disk)
 			}
