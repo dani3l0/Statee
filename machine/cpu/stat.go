@@ -1,7 +1,7 @@
 package cpu
 
 import (
-	"statee/syslib/utils/sysfs"
+	"statee/machine/utils"
 	"strconv"
 	"strings"
 	"time"
@@ -39,7 +39,7 @@ func GetCpuStat() []CPUStat {
 // Parses /proc/stat lines and returns for each cpu
 func getCPUStat() []CPUStat {
 	var stats []CPUStat
-	stat, _ := sysfs.Cat("/proc/stat")
+	stat, _ := utils.Cat("/proc/stat")
 	lines := strings.Split(stat, "\n")
 
 	for _, line := range lines {

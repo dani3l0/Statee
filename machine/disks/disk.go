@@ -2,7 +2,7 @@ package disks
 
 import (
 	"path"
-	"statee/syslib/utils/sysfs"
+	"statee/machine/utils"
 )
 
 type Disk struct {
@@ -22,8 +22,8 @@ func GetDisk(id string) (Disk, error) {
 	disk.Name = id
 	pathTo := path.Join("/sys/class/block", id)
 
-	disk.Space, _ = sysfs.CatInt(path.Join(pathTo, "size"))
-	removable, _ := sysfs.CatInt(path.Join(pathTo, "removable"))
+	disk.Space, _ = utils.CatInt(path.Join(pathTo, "size"))
+	removable, _ := utils.CatInt(path.Join(pathTo, "removable"))
 	disk.Removable = removable != 0
 
 	p := parseDiskStat(path.Join(pathTo, "stat"))

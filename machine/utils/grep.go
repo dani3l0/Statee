@@ -1,4 +1,4 @@
-package sysfs
+package utils
 
 import (
 	"errors"

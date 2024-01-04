@@ -1,7 +1,7 @@
 package disks
 
 import (
-	"statee/syslib/utils/sysfs"
+	"statee/machine/utils"
 	"strconv"
 	"strings"
 )
@@ -25,7 +25,7 @@ var statsHist DiskStatHist
 func parseDiskStat(path string) DiskStat {
 	var result DiskStat
 	stats := DiskStat{}
-	contents, _ := sysfs.Cat(path)
+	contents, _ := utils.Cat(path)
 	values := strings.Fields(contents)
 
 	readIOs, _ := strconv.Atoi(values[0])

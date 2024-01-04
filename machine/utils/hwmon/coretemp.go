@@ -4,7 +4,7 @@ import (
 	"errors"
 	"os"
 	"path"
-	"statee/syslib/utils/sysfs"
+	"statee/machine/utils"
 	"strings"
 )
 
@@ -34,18 +34,18 @@ func GetCoretemp() (Coretemp, error) {
 
 			switch sensor_type {
 			case "label":
-				value, _ := sysfs.Cat(path.Join(coretemp_path, name))
+				value, _ := utils.Cat(path.Join(coretemp_path, name))
 				coretemp.Labels = append(coretemp.Labels, value)
 
 			case "input":
-				value, _ := sysfs.CatInt(path.Join(coretemp_path, name))
+				value, _ := utils.CatInt(path.Join(coretemp_path, name))
 				if value > 200 {
 					value /= 1000
 				}
 				coretemp.Temps = append(coretemp.Temps, value)
 
 			case "crit":
-				value, _ := sysfs.CatInt(path.Join(coretemp_path, name))
+				value, _ := utils.CatInt(path.Join(coretemp_path, name))
 				if value > 200 {
 					value /= 1000
 				}

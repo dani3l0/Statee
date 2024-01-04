@@ -1,9 +1,13 @@
 package main
 
 import (
-	"statee/syslib/disks"
+	"statee/machine"
+	"time"
 )
 
 func main() {
-	disks.GetSmartData("/dev/sda")
+	for {
+		machine.Dump()
+		time.Sleep(time.Second)
+	}
 }

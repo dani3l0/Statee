@@ -3,7 +3,7 @@ package cpu
 import (
 	"os"
 	"path"
-	"statee/syslib/utils/sysfs"
+	"statee/machine/utils"
 	"strconv"
 	"strings"
 )
@@ -26,7 +26,7 @@ type Core struct {
 }
 
 // Main function, get all cpu information
-func Get() Cpu {
+func GetCpu() Cpu {
 	var cpu Cpu
 	cpu.Cores = GetCores()
 
@@ -51,7 +51,7 @@ func GetCores() []Core {
 		cores[i].Usage = usage_all[i]
 	}
 
-	// Stuff from sysfs
+	// Stuff from utils
 	sys_data, _ := os.ReadDir("/sys/devices/system/cpu")
 	for i, entry := range sys_data {
 		_cpuid := strings.Replace(entry.Name(), "cpu", "", 1)
@@ -62,12 +62,12 @@ func GetCores() []Core {
 
 		cpu_path := path.Join("/sys/devices/system/cpu", "cpu"+strconv.Itoa(cpuid))
 
-		online_, _ := sysfs.CatInt(path.Join(cpu_path, "online"))
+		online_, _ := utils.CatInt(path.Join(cpu_path, "online"))
 		cores[i].Online = online_ != 0
 
-		freq_now, _ := sysfs.CatInt(path.Join(cpu_path, "cpufreq/scaling_cur_freq"))
-		freq_min, _ := sysfs.CatInt(path.Join(cpu_path, "cpufreq/scaling_min_freq"))
-		freq_max, _ := sysfs.CatInt(path.Join(cpu_path, "cpufreq/scaling_max_freq"))
+		freq_now, _ := utils.CatInt(path.Join(cpu_path, "cpufreq/scaling_cur_freq"))
+		freq_min, _ := utils.CatInt(path.Join(cpu_path, "cpufreq/scaling_min_freq"))
+		freq_max, _ := utils.CatInt(path.Join(cpu_path, "cpufreq/scaling_max_freq"))
 		freq_now /= 1000
 		freq_min /= 1000
 		freq_max /= 1000

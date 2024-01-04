@@ -1,6 +1,6 @@
 package cpu
 
-import "statee/syslib/utils/hwmon"
+import "statee/machine/utils/hwmon"
 
 type Temperature struct {
 	Name     string

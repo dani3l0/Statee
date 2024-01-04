@@ -3,7 +3,7 @@ package network
 import (
 	"os"
 	"path"
-	"statee/syslib/utils/sysfs"
+	"statee/machine/utils"
 	"strings"
 )
 
@@ -20,7 +20,7 @@ type Interface struct {
 }
 
 // Find all interfaces and fetch information
-func GetInterfaces() []Interface {
+func GetNetwork() []Interface {
 	var interfaces []Interface
 	ifaces, _ := os.ReadDir(NET_PATH)
 
@@ -44,12 +44,12 @@ func GetInterfaces() []Interface {
 func GetInterface(name string) Interface {
 	ipath := path.Join(NET_PATH, name)
 
-	rx, _ := sysfs.CatInt(path.Join(ipath, "statistics/rx_bytes"))
-	tx, _ := sysfs.CatInt(path.Join(ipath, "statistics/tx_bytes"))
-	speed, _ := sysfs.CatInt(path.Join(ipath, "speed"))
-	mac_address, _ := sysfs.Cat(path.Join(ipath, "address"))
-	wired, _ := sysfs.CatInt(path.Join(ipath, "carrier"))
-	state, _ := sysfs.Cat(path.Join(ipath, "operstate"))
+	rx, _ := utils.CatInt(path.Join(ipath, "statistics/rx_bytes"))
+	tx, _ := utils.CatInt(path.Join(ipath, "statistics/tx_bytes"))
+	speed, _ := utils.CatInt(path.Join(ipath, "speed"))
+	mac_address, _ := utils.Cat(path.Join(ipath, "address"))
+	wired, _ := utils.CatInt(path.Join(ipath, "carrier"))
+	state, _ := utils.Cat(path.Join(ipath, "operstate"))
 
 	return Interface{
 		Name:       name,
