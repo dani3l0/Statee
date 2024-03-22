@@ -19,6 +19,7 @@ type Process struct {
 	Uid    int
 }
 
+// Get information of a process with provided id
 func GetProcess(id int) (Process, error) {
 	var process Process
 	var err error
@@ -38,6 +39,7 @@ func GetProcess(id int) (Process, error) {
 	return process, err
 }
 
+// List all PIDs
 func GetProcesses() Processes {
 	var processes Processes
 	proc, _ := os.ReadDir("/proc")

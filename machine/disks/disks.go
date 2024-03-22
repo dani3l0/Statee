@@ -13,6 +13,7 @@ var whitelist = []string{
 	"vd",     // QEMU virtual disk devices (vda, vdb, ...)
 }
 
+// Find all appropriate disks
 func GetDisks() []Disk {
 	disks := []Disk{}
 	devices, _ := os.ReadDir("/sys/block")

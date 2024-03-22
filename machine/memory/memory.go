@@ -11,6 +11,7 @@ type Memory struct {
 	SwapTotal     int
 }
 
+// Parse meminfo
 func GetMemory() Memory {
 	var memory Memory
 	meminfo, _ := utils.Cat("/proc/meminfo")

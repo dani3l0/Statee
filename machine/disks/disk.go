@@ -7,6 +7,7 @@ import (
 
 type Disk struct {
 	Name       string
+	Model      string
 	Space      int
 	Removable  bool
 	ReadSpeed  int
@@ -17,14 +18,16 @@ type Disk struct {
 	WriteIOs   int
 }
 
+// Get disk with ids such as 'sda', 'sdb'
 func GetDisk(id string) (Disk, error) {
 	var disk = Disk{}
 	disk.Name = id
 	pathTo := path.Join("/sys/class/block", id)
 
-	disk.Space, _ = utils.CatInt(path.Join(pathTo, "size"))
-	removable, _ := utils.CatInt(path.Join(pathTo, "removable"))
+	disk.Space, _ = utils.CatInt(pathTo, "size")
+	removable, _ := utils.CatInt(pathTo, "removable")
 	disk.Removable = removable != 0
+	disk.Model, _ = utils.Cat(pathTo, "device/model")
 
 	p := parseDiskStat(path.Join(pathTo, "stat"))
 	disk.ReadSpeed = p.ReadSectors

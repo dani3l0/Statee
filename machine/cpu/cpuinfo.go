@@ -15,7 +15,7 @@ type CpuInfo struct {
 // Parses /proc/cpuinfo and gets basic information about installed CPU
 func GetCpuInfo() CpuInfo {
 	var cpu_info CpuInfo
-	const selected_flags = "avx avx2 aes vmx svm"
+	const selected_flags = "avx2 aes vmx svm"
 
 	cpuinfo_raw, _ := utils.Cat("/proc/cpuinfo")
 

@@ -2,14 +2,15 @@ package utils
 
 import (
 	"os"
+	"path"
 	"regexp"
 	"strconv"
 	"strings"
 )
 
 // Directly reads and trims string from fire
-func Cat(target string) (string, error) {
-	rawdata, err := os.ReadFile(target)
+func Cat(target ...string) (string, error) {
+	rawdata, err := os.ReadFile(path.Join(target...))
 	if err != nil {
 		return "", err
 	}
@@ -20,9 +21,9 @@ func Cat(target string) (string, error) {
 }
 
 // Uses the above function and converts result to integer
-func CatInt(target string) (int, error) {
+func CatInt(target ...string) (int, error) {
 	wtf, _ := regexp.Compile("[^0-9]+")
-	data, err := Cat(target)
+	data, err := Cat(target...)
 	if err != nil {
 		return -127, err
 	}

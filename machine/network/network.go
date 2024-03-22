@@ -2,7 +2,6 @@ package network
 
 import (
 	"os"
-	"path"
 	"statee/machine/utils"
 	"strings"
 )
@@ -30,6 +29,7 @@ func GetNetwork() []Interface {
 		ignored := name == "lo" || // loopback
 			strings.HasPrefix(name, "docker") || // docker
 			strings.HasPrefix(name, "veth") || // virtual
+			strings.HasPrefix(name, "virt") || // virtual
 			strings.HasPrefix(name, "br") // bridge
 
 		if ignored {
@@ -42,14 +42,12 @@ func GetNetwork() []Interface {
 
 // Get specified interface information
 func GetInterface(name string) Interface {
-	ipath := path.Join(NET_PATH, name)
-
-	rx, _ := utils.CatInt(path.Join(ipath, "statistics/rx_bytes"))
-	tx, _ := utils.CatInt(path.Join(ipath, "statistics/tx_bytes"))
-	speed, _ := utils.CatInt(path.Join(ipath, "speed"))
-	mac_address, _ := utils.Cat(path.Join(ipath, "address"))
-	wired, _ := utils.CatInt(path.Join(ipath, "carrier"))
-	state, _ := utils.Cat(path.Join(ipath, "operstate"))
+	rx, _ := utils.CatInt(NET_PATH, name, "statistics/rx_bytes")
+	tx, _ := utils.CatInt(NET_PATH, name, "statistics/tx_bytes")
+	speed, _ := utils.CatInt(NET_PATH, name, "speed")
+	mac_address, _ := utils.Cat(NET_PATH, name, "address")
+	carrier, _ := utils.CatInt(NET_PATH, name, "carrier")
+	state, _ := utils.Cat(NET_PATH, name, "operstate")
 
 	return Interface{
 		Name:       name,
@@ -57,7 +55,7 @@ func GetInterface(name string) Interface {
 		Tx:         tx,
 		Speed:      speed,
 		MacAddress: mac_address,
-		Wired:      wired == 1,
+		Wired:      carrier == 0,
 		State:      state,
 	}
 }

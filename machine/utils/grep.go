@@ -53,7 +53,7 @@ func GrepsInt(contents string, find string) ([]int, error) {
 	return ints, err
 }
 
-// Same as greps, but returns only first occurence
+// Same as Greps, but returns only first occurence
 func Grep(contents string, find string) (string, error) {
 	result, err := Greps(contents, find)
 	if err != nil {
