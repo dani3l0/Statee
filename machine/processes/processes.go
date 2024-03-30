@@ -28,6 +28,7 @@ func GetProcess(id int) (Process, error) {
 	if err != nil {
 		return process, err
 	}
+	process.Name = strings.Trim(process.Name, "\t")
 	process.Memory, err = utils.GrepInt(raw, "RssAnon")
 	if err != nil {
 		return process, err

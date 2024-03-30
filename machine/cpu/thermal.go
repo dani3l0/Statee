@@ -1,7 +1,6 @@
 package cpu
 
 import (
-	"fmt"
 	"os"
 	"path"
 	"regexp"
@@ -50,7 +49,6 @@ func getCoretemps() coretemps {
 	for _, v := range sensors {
 		_name := v.Name()
 		name := strings.Split(_name, "_")
-		fmt.Println(name)
 		if len(name) != 2 || name[1] != "label" {
 			continue
 		}
