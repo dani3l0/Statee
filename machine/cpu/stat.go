@@ -1,66 +1,60 @@
 package cpu
 
 import (
-	"statee/machine/utils"
 	"strconv"
 	"strings"
-	"time"
 )
 
-type CPUStat struct {
-	Idle      int
-	IdleLast  int
-	Total     int
-	TotalLast int
+// Stat line
+// cpu[x](0)  user(1)  nice{2}  system(3)  idle(4)  iowait(5)  irq(6)  softirq(7)  steal(8)  guest(9)
+// cpu5	      13184    3        3630       405391   160        759     326         0         0
+
+// {"cpu0": [27424, 3228]} etc.
+var statCache = make(map[string][]int)
+
+func getLoadFor(stat string, cpuId int) float32 {
+	for _, line := range strings.Split(stat, "\n") {
+		fields := strings.Fields(line)
+		name := fields[0]
+		if len(fields) > 0 && name == "cpu"+strconv.Itoa(cpuId) {
+			idle := statDiff(name, 0, atoi(fields[4]))
+			load := statDiff(name, 1, statUsed(fields))
+			total := idle + load
+			return 100.0 * float32(load) / float32(total)
+		}
+	}
+	return -127
 }
 
-var cpuStat []CPUStat
-
-// Gets /proc/stat and calculates the differences for each cpu
-func GetCpuStat() []CPUStat {
-	stats := getCPUStat()
-
-	if len(cpuStat) == 0 {
-		cpuStat = stats
-		time.Sleep(time.Second)
-		stats = getCPUStat()
+// Auto-compute difference between current and previous results
+// for live data
+// Sum stat fields considered as an actual load
+func statDiff(cpuName string, mapId int, newValue int) int {
+	if _, ok := statCache[cpuName]; !ok {
+		statCache[cpuName] = []int{0, 0}
 	}
-
-	for i := 0; i < len(stats); i++ {
-		cpuStat[i].IdleLast = cpuStat[i].Idle
-		cpuStat[i].TotalLast = cpuStat[i].Total
-		cpuStat[i].Idle = stats[i].Idle
-		cpuStat[i].Total = stats[i].Total
-	}
-
-	return cpuStat
+	sth := newValue
+	sthLast := statCache[cpuName][mapId]
+	sthDiff := sth - sthLast
+	statCache[cpuName][mapId] = sth
+	return sthDiff
 }
 
-// Parses /proc/stat lines and returns for each cpu
-func getCPUStat() []CPUStat {
-	var stats []CPUStat
-	stat, _ := utils.Cat("/proc/stat")
-	lines := strings.Split(stat, "\n")
+// Sum stat fields considered as an actual load
+func statUsed(fields []string) int {
+	used := 0
+	used += atoi(fields[1])
+	used += atoi(fields[2])
+	used += atoi(fields[3])
+	used += atoi(fields[6])
+	used += atoi(fields[7])
+	return used
+}
 
-	for _, line := range lines {
-		stat := CPUStat{}
-		entry := strings.Fields(line)
-		device := entry[0]
-		if len(device) <= 3 || !strings.Contains(device, "cpu") {
-			continue
-		}
-
-		// cpu user nice system idle iowait irq softirq steal guest
-		idle, _ := strconv.Atoi(entry[4])
-		stat.Idle = idle
-		stat.Total = 0
-
-		for _, s := range entry {
-			n, _ := strconv.Atoi(s)
-			stat.Total += n
-		}
-		stats = append(stats, stat)
+func atoi(a string) int {
+	i, err := strconv.Atoi(a)
+	if err != nil {
+		return 0
 	}
-
-	return stats
+	return i
 }

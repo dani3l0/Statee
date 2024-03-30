@@ -1,17 +1,79 @@
 package cpu
 
-// Return usages in %% for each cpu
-func GetCpuUsage() []float32 {
-	cpu_stat := GetCpuStat()
-	var cpu_usage []float32
+import (
+	"os"
+	"path"
+	"regexp"
+	"sort"
+	"statee/machine/utils"
+	"strconv"
+	"strings"
+)
 
-	for _, core := range cpu_stat {
-		diff_idle := core.Idle - core.IdleLast
-		diff_total := core.Total - core.TotalLast
-		core_usage := 100.0 * float32(diff_idle) / float32(diff_total)
-		core_usage = 100.0 - core_usage
-		cpu_usage = append(cpu_usage, core_usage)
+type Usage struct {
+	Id       int
+	Core     int
+	Load     float32
+	Online   bool
+	Freq     int
+	BaseFreq int
+	MinFreq  int
+	MaxFreq  int
+	Temp     float32
+	Melt     float32
+}
+
+// Gets information for all cores for one cpu
+func GetUsage() []Usage {
+	usage := []Usage{}
+	pattern := regexp.MustCompile(`^cpu\d+$`)
+	stat, _ := utils.Cat("/proc/stat")
+	sys := "/sys/devices/system/cpu"
+	cpus, _ := os.ReadDir(sys)
+
+	temps := getCoretemps()
+
+	for _, v := range cpus {
+		// Check if dir is named 'cpu[x]'
+		name := v.Name()
+		if !pattern.MatchString(name) {
+			continue
+		}
+
+		// Runtime parameters
+		u := Usage{}
+		x := path.Join(sys, name)
+
+		id := strings.Replace(name, "cpu", "", 1)
+		u.Id = atoi(id)
+		online, _ := utils.CatInt(x, "online")
+		u.Online = online != 0
+
+		// Online CPUs stuff
+		if u.Online {
+			u.Core, _ = utils.CatInt(x, "topology/core_id")
+			u.Load = getLoadFor(stat, u.Id)
+
+			// Frequencies
+			u.Freq, _ = utils.CatInt(x, "cpufreq/scaling_cur_freq")
+			u.BaseFreq, _ = utils.CatInt(x, "cpufreq/base_frequency")
+			u.MinFreq, _ = utils.CatInt(x, "cpufreq/scaling_min_freq")
+			u.MaxFreq, _ = utils.CatInt(x, "cpufreq/scaling_max_freq")
+			u.Freq /= 1000
+			u.BaseFreq /= 1000
+			u.MinFreq /= 1000
+			u.MaxFreq /= 1000
+			u.Temp = temps.Temps[strconv.Itoa(u.Core)].Temp
+			u.Melt = temps.Temps[strconv.Itoa(u.Core)].Melt
+		}
+
+		usage = append(usage, u)
 	}
 
-	return cpu_usage
+	// Sort ascending by Id
+	sort.Slice(usage, func(i, j int) bool {
+		return usage[i].Id < usage[j].Id
+	})
+
+	return usage
 }
