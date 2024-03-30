@@ -2,6 +2,7 @@ package network
 
 import (
 	"os"
+	"path"
 	"statee/machine/utils"
 	"strings"
 )
@@ -9,7 +10,6 @@ import (
 var NET_PATH = "/sys/class/net"
 
 type Interface struct {
-	Name       string
 	Rx         int
 	Tx         int
 	Speed      int
@@ -19,8 +19,8 @@ type Interface struct {
 }
 
 // Find all interfaces and fetch information
-func GetNetwork() []Interface {
-	var interfaces []Interface
+func GetNetwork() map[string]Interface {
+	interfaces := make(map[string]Interface)
 	ifaces, _ := os.ReadDir(NET_PATH)
 
 	for _, x := range ifaces {
@@ -35,7 +35,7 @@ func GetNetwork() []Interface {
 		if ignored {
 			continue
 		}
-		interfaces = append(interfaces, GetInterface(name))
+		interfaces[name] = GetInterface(name)
 	}
 	return interfaces
 }
@@ -46,16 +46,15 @@ func GetInterface(name string) Interface {
 	tx, _ := utils.CatInt(NET_PATH, name, "statistics/tx_bytes")
 	speed, _ := utils.CatInt(NET_PATH, name, "speed")
 	mac_address, _ := utils.Cat(NET_PATH, name, "address")
-	carrier, _ := utils.CatInt(NET_PATH, name, "carrier")
+	_, wireless := os.Stat(path.Join(NET_PATH, name, "wireless"))
 	state, _ := utils.Cat(NET_PATH, name, "operstate")
 
 	return Interface{
-		Name:       name,
 		Rx:         rx,
 		Tx:         tx,
 		Speed:      speed,
 		MacAddress: mac_address,
-		Wired:      carrier == 0,
+		Wired:      wireless != nil,
 		State:      state,
 	}
 }
