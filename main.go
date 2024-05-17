@@ -9,7 +9,7 @@ import (
 func main() {
 	http.HandleFunc("/api/cpu", machine.GetCpu)
 	http.HandleFunc("/api/memory", machine.GetMemory)
-	http.HandleFunc("/api/disks", machine.GetDisks)
+	http.HandleFunc("/api/storage", machine.GetStorage)
 	http.HandleFunc("/api/network", machine.GetNetwork)
 	http.HandleFunc("/api/osinfo", machine.GetOsInfo)
 	http.HandleFunc("/api/processes", machine.GetProcesses)

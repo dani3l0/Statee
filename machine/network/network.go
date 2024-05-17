@@ -15,7 +15,7 @@ type Interface struct {
 	Speed      int
 	MacAddress string
 	Wired      bool
-	State      string
+	Enabled    bool
 }
 
 // Find all interfaces and fetch information
@@ -55,6 +55,6 @@ func GetInterface(name string) Interface {
 		Speed:      speed,
 		MacAddress: mac_address,
 		Wired:      wireless != nil,
-		State:      state,
+		Enabled:    state == "up",
 	}
 }

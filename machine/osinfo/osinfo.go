@@ -1,6 +1,7 @@
 package osinfo
 
 import (
+	"runtime"
 	"statee/machine/utils"
 	"strconv"
 	"strings"
@@ -52,6 +53,7 @@ func GetOsInfo() OsInfo {
 		parsed, _ := strconv.ParseFloat(entry, 64)
 		osinfo.LoadAvg = append(osinfo.LoadAvg, float32(parsed))
 	}
+	osinfo.LoadAvgMax = runtime.NumCPU()
 
 	// Return pretty info
 	return osinfo

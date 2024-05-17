@@ -1,4 +1,4 @@
-package disks
+package storage
 
 import (
 	"os"
@@ -17,12 +17,16 @@ var whitelist = []string{
 func GetDisks() []Disk {
 	disks := []Disk{}
 	devices, _ := os.ReadDir("/sys/block")
+	GetMounts()
 
 	for _, v := range devices {
 		x := v.Name()
 		for _, y := range whitelist {
 			if strings.HasPrefix(x, y) {
-				disk, _ := GetDisk(x)
+				disk, err := GetDisk(x)
+				if err != nil {
+					continue
+				}
 				disks = append(disks, disk)
 			}
 		}

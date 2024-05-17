@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"net/http"
 	"statee/api/utils"
-	"statee/machine/disks"
+	"statee/machine/storage"
 )
 
-func GetDisks(w http.ResponseWriter, r *http.Request) {
+func GetStorage(w http.ResponseWriter, r *http.Request) {
 	utils.SetHeaders(w)
-	rawData := disks.GetDisks()
+	rawData := storage.GetDisks()
 	jsonData, _ := json.Marshal(rawData)
 
 	w.Write(jsonData)
