@@ -12,6 +12,9 @@
 	<h1>Statee</h1>
 	<p>Yeah, it works</p>
 	<Button>Click xd</Button>
+	<Button highlighted>Click xd</Button>
+
+	<Button highlighted>Click xd</Button>
 </main>
 
 
