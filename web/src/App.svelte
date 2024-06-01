@@ -1,20 +1,13 @@
 <!-- Imports -->
 <script>
 	import "@fontsource/quicksand/600.css"
-	import * as Icons from 'lucide-svelte'
-    import Button from "./components/Button.svelte";
+    import ProgressBar from "./components/Base/ProgressBar.svelte";
 </script>
 
 
 <!-- Main wrapper -->
 <main>
-	<Icons.ArrowDown />
-	<h1>Statee</h1>
-	<p>Yeah, it works</p>
-	<Button>Click xd</Button>
-	<Button highlighted>Click xd</Button>
-
-	<Button highlighted>Click xd</Button>
+	<!-- component testing for now -->
 </main>
 
 
