@@ -29,6 +29,6 @@
 		width: 0;
 		height: 100%;
 		background: #68F;
-		transition: all .8s ease;
+		transition: all 1s cubic-bezier(0.65, 0, 0.35, 1);
 	}
 </style>
